@@ -7,7 +7,7 @@ function getDealTermsAndConditions(doc) {
   let dealTermsAndConditionsData = doc.querySelectorAll('div.deal-properties-container > ul.list-unstyled > li')
 
   for (let dealTermsAndConditionsDatum of dealTermsAndConditionsData) {
-    dealTermsAndConditions.push(dealTermsAndConditionsDatum.innerText)
+    dealTermsAndConditions.push(dealTermsAndConditionsDatum.innerText.trim())
   }
 
   return dealTermsAndConditions
