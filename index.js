@@ -175,19 +175,13 @@ async function getAllDataOfProduct(productUrl) {
       let dealTermsAndConditions = getDealTermsAndConditions(document)
       let featuresIncludedInAllPlans = getFeaturesIncludedInAllPlans(document)
       let completeDetailsOfFirstFewPlans = getCompleteDetailsOfFirstFewPlans(document)
+      let completeDetailsOfOtherPlans = []
 
       if (basicDetailsOfAllPlans.length > 3) {
         completeDetailsOfOtherPlans = getCompleteDetailsOfOtherPlans(document)
       }
 
-      completeDetailsOfAllPlans = completeDetailsOfFirstFewPlans.concat(completeDetailsOfOtherPlans)
-
-      console.log({
-        basicDetailsOfAllPlans,
-        dealTermsAndConditions,
-        featuresIncludedInAllPlans,
-        completeDetailsOfAllPlans
-      });
+      let completeDetailsOfAllPlans = completeDetailsOfFirstFewPlans.concat(completeDetailsOfOtherPlans)
 
       return {
         basicDetailsOfAllPlans,
