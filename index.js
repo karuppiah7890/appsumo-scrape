@@ -1,7 +1,7 @@
 const companies = require('/Users/karuppiah/everyday-logs/2023/july/appsumo-july-latest-basic.json')
 const puppeteer = require('puppeteer')
 
-function scriptRunningInsideBrowser() {
+async function scriptRunningInsideBrowser() {
   function getFeaturesIncludedInAllPlans(doc) {
     let featuresIncludedInAllPlans = []
 
@@ -14,7 +14,11 @@ function scriptRunningInsideBrowser() {
     return featuresIncludedInAllPlans
   }
 
-  function getCompleteDetailsOfOtherPlans(doc) {
+  function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+  }
+
+  async function getCompleteDetailsOfOtherPlans(doc) {
     let plans = []
 
     let plansInDropDown = doc.querySelectorAll('div.appsumo-dropdown-outer-container.pricing-table > div.appsumo-dropdown-inner-container > div.frontend-dropdown.dropdown-item')
@@ -26,9 +30,11 @@ function scriptRunningInsideBrowser() {
       // Choose plan from drop down
       p.click()
 
+      await delay(1000)
+
       const firstFewPlansData = doc.querySelectorAll('ul#plans.list-unstyled > li.plan-item.plan')
       if (firstFewPlansData.length !== 3) {
-        continue
+        break
       }
 
       const lastPlan = firstFewPlansData[firstFewPlansData.length - 1]
@@ -139,7 +145,7 @@ function scriptRunningInsideBrowser() {
 
   function getCompleteDetailsOfFirstFewPlans(doc) {
     let plans = []
-    let firstFewPlansData = doc.querySelectorAll('ul#plans.list-unstyled > li.plan-item.plan')
+    const firstFewPlansData = doc.querySelectorAll('ul#plans.list-unstyled > li.plan-item.plan')
 
     for (let planData of firstFewPlansData) {
       const {
@@ -171,7 +177,7 @@ function scriptRunningInsideBrowser() {
   let completeDetailsOfOtherPlans = []
 
   if (basicDetailsOfAllPlans.length > 3) {
-    completeDetailsOfOtherPlans = getCompleteDetailsOfOtherPlans(document)
+    completeDetailsOfOtherPlans = await getCompleteDetailsOfOtherPlans(document)
   }
 
   let completeDetailsOfAllPlans = completeDetailsOfFirstFewPlans.concat(completeDetailsOfOtherPlans)
@@ -211,31 +217,29 @@ async function getAllDataOfProduct(page, productUrl) {
 
 async function main() {
   // Launch the browser
-  const browser = await puppeteer.launch({headless: false});
+  const browser = await puppeteer.launch();
 
   // Create a page
   const page = await browser.newPage();
 
-  const index = 0
-  //   for(let index = 0; index < companies.length; index++) {
-  const company = companies[index]
-  const {
-    basicDetailsOfAllPlans,
-    dealTermsAndConditions,
-    featuresIncludedInAllPlans,
-    completeDetailsOfAllPlans
-  } = await getAllDataOfProduct(page, company.productUrl)
+  for (let index = 0; index < companies.length; index++) {
+    const company = companies[index]
+    const {
+      basicDetailsOfAllPlans,
+      dealTermsAndConditions,
+      featuresIncludedInAllPlans,
+      completeDetailsOfAllPlans
+    } = await getAllDataOfProduct(page, company.productUrl)
 
-  companies[index].basicDetailsOfAllPlans = basicDetailsOfAllPlans;
-  companies[index].dealTermsAndConditions = dealTermsAndConditions;
-  companies[index].featuresIncludedInAllPlans = featuresIncludedInAllPlans;
-  companies[index].completeDetailsOfAllPlans = completeDetailsOfAllPlans;
-  //   }
+    companies[index].basicDetailsOfAllPlans = basicDetailsOfAllPlans;
+    companies[index].dealTermsAndConditions = dealTermsAndConditions;
+    companies[index].featuresIncludedInAllPlans = featuresIncludedInAllPlans;
+    companies[index].completeDetailsOfAllPlans = completeDetailsOfAllPlans;
+
+    console.log(JSON.stringify(companies[index], null, 2));
+  }
 
   await browser.close()
-
-  console.log(JSON.stringify(companies[index], null, 2));
-  //   console.log(JSON.stringify(companies, null, 2));
 }
 
 main()
