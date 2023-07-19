@@ -1,5 +1,4 @@
 const companies = require('/Users/karuppiah/everyday-logs/2023/july/appsumo-july-latest-basic.json')
-// const taiko = require('taiko')
 const puppeteer = require('puppeteer')
 
 function scriptRunningInsideBrowser() {
@@ -189,7 +188,6 @@ async function getAllDataOfProduct(page, productUrl) {
   try {
     // Go to your site
     await page.goto(productUrl);
-    // await taiko.goto(productUrl)
 
     let {
       basicDetailsOfAllPlans,
@@ -213,8 +211,7 @@ async function getAllDataOfProduct(page, productUrl) {
 
 async function main() {
   // Launch the browser
-  // await taiko.openBrowser({ headless: false })
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({headless: false});
 
   // Create a page
   const page = await browser.newPage();
@@ -235,7 +232,6 @@ async function main() {
   companies[index].completeDetailsOfAllPlans = completeDetailsOfAllPlans;
   //   }
 
-  // await taiko.closeBrowser()
   await browser.close()
 
   console.log(JSON.stringify(companies[index], null, 2));
