@@ -37,7 +37,7 @@ function scriptRunningInsideBrowser() {
         planCostMetaDetail,
         discountedCost,
         originalCost,
-        feature,
+        features,
       } = getPlan(lastPlan)
 
       plans.push({
@@ -45,7 +45,7 @@ function scriptRunningInsideBrowser() {
         planCostMetaDetail,
         discountedCost,
         originalCost,
-        feature,
+        features,
       })
 
     }
